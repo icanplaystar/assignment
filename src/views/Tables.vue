@@ -155,7 +155,7 @@ const eventsTable = useTable(events, eventsColumns)
           <table class="table table-striped table-hover align-middle">
             <thead>
               <tr>
-                <th v-for="col in usersColumns" :key="col.key" role="button" @click="usersTable.toggleSort(col.key)">
+                <th v-for="col in usersColumns" :key="col.key" role="button" scope="col" :aria-sort="usersTable.sortKey===col.key ? (usersTable.sortDir==='asc' ? 'ascending' : 'descending') : 'none'" @click="usersTable.toggleSort(col.key)">
                   {{ col.label }}
                   <span v-if="usersTable.sortKey===col.key">{{ usersTable.sortDir==='asc' ? '▲' : '▼' }}</span>
                 </th>
@@ -214,7 +214,7 @@ const eventsTable = useTable(events, eventsColumns)
           <table class="table table-striped table-hover align-middle">
             <thead>
               <tr>
-                <th v-for="col in eventsColumns" :key="col.key" role="button" @click="eventsTable.toggleSort(col.key)">
+                <th v-for="col in eventsColumns" :key="col.key" role="button" scope="col" :aria-sort="eventsTable.sortKey===col.key ? (eventsTable.sortDir==='asc' ? 'ascending' : 'descending') : 'none'" @click="eventsTable.toggleSort(col.key)">
                   {{ col.label }}
                   <span v-if="eventsTable.sortKey===col.key">{{ eventsTable.sortDir==='asc' ? '▲' : '▼' }}</span>
                 </th>

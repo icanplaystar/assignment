@@ -60,17 +60,17 @@ async function loginWithGoogle() {
           <div class="card shadow-sm rounded-3">
             <div class="card-body p-4">
               <div v-if="errors.general" class="alert alert-danger">{{ errors.general }}</div>
-              <div class="mb-4">
-                <label class="form-label">Email</label>
-                <input v-model.trim="form.email" type="email" class="form-control form-control-lg" placeholder="you@example.com" />
+          <div class="mb-4">
+            <label class="form-label" for="login-email">Email</label>
+            <input id="login-email" v-model.trim="form.email" type="email" class="form-control form-control-lg" placeholder="you@example.com" autocomplete="username" />
                 <div v-if="errors.email" class="text-danger small">{{ errors.email }}</div>
               </div>
               <div class="mb-4">
-                <label class="form-label">Password</label>
-                <input v-model.trim="form.password" type="password" class="form-control form-control-lg" />
+            <label class="form-label" for="login-password">Password</label>
+            <input id="login-password" v-model.trim="form.password" type="password" class="form-control form-control-lg" autocomplete="current-password" />
                 <div v-if="errors.password" class="text-danger small">{{ errors.password }}</div>
               </div>
-              <button class="btn btn-primary btn-lg w-100 mb-3 py-3 fw-semibold" :disabled="submitting" @click="submit">Login</button>
+          <button class="btn btn-primary btn-lg w-100 mb-3 py-3 fw-semibold" :disabled="submitting" @click="submit" type="submit">Login</button>
               <button class="btn btn-outline-secondary btn-lg w-100 py-3 fw-semibold" :disabled="submitting" @click="loginWithGoogle">
                 Sign in with Google
               </button>

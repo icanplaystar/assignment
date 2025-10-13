@@ -57,16 +57,16 @@ async function send() {
     <div class="card">
       <div class="card-body">
         <div class="mb-3">
-          <label class="form-label">To</label>
-          <input v-model.trim="form.to" type="text" class="form-control" placeholder="recipient1@example.com, recipient2@example.com" />
+          <label class="form-label" for="email-to">To</label>
+          <input id="email-to" v-model.trim="form.to" type="text" class="form-control" placeholder="recipient1@example.com, recipient2@example.com" />
         </div>
         <div class="mb-3">
-          <label class="form-label">Subject</label>
-          <input v-model.trim="form.subject" type="text" class="form-control" />
+          <label class="form-label" for="email-subject">Subject</label>
+          <input id="email-subject" v-model.trim="form.subject" type="text" class="form-control" />
         </div>
         <div class="mb-3">
-          <label class="form-label">Text</label>
-          <textarea v-model.trim="form.text" class="form-control" rows="4"></textarea>
+          <label class="form-label" for="email-text">Text</label>
+          <textarea id="email-text" v-model.trim="form.text" class="form-control" rows="4"></textarea>
         </div>
         <div class="mb-3">
           <label class="form-label">Attachment</label>

@@ -17,10 +17,11 @@ function logout() {
 
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a href="#main" class="visually-hidden-focusable skip-link">Skip to main content</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" role="navigation" aria-label="Primary">
       <div class="container-fluid">
         <a class="navbar-brand" href="#" @click.prevent="$router.push({ name: 'home' })">PingPong Pathways</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample" aria-controls="navbarsExample" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarsExample">
@@ -94,8 +95,8 @@ function logout() {
       </div>
     </nav>
 
-    <main class="container-fluid my-4">
-      <router-view />
+    <main id="main" class="container-fluid my-4" role="main">
+      <router-view aria-live="polite" />
     </main>
   </div>
   

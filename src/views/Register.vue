@@ -60,18 +60,18 @@ async function signupWithGoogle() {
             <div class="card-body p-4">
               <div v-if="errors.general" class="alert alert-danger">{{ errors.general }}</div>
               <div class="mb-4">
-                <label class="form-label">Name</label>
-                <input v-model.trim="form.name" type="text" class="form-control form-control-lg" />
+                <label class="form-label" for="reg-name">Name</label>
+                <input id="reg-name" v-model.trim="form.name" type="text" class="form-control form-control-lg" autocomplete="name" />
                 <div v-if="errors.name" class="text-danger small">{{ errors.name }}</div>
               </div>
               <div class="mb-4">
-                <label class="form-label">Email</label>
-                <input v-model.trim="form.email" type="email" class="form-control form-control-lg" placeholder="you@example.com" />
+                <label class="form-label" for="reg-email">Email</label>
+                <input id="reg-email" v-model.trim="form.email" type="email" class="form-control form-control-lg" placeholder="you@example.com" autocomplete="email" />
                 <div v-if="errors.email" class="text-danger small">{{ errors.email }}</div>
               </div>
               <div class="mb-4">
-                <label class="form-label">Password</label>
-                <input v-model.trim="form.password" type="password" class="form-control form-control-lg" />
+                <label class="form-label" for="reg-password">Password</label>
+                <input id="reg-password" v-model.trim="form.password" type="password" class="form-control form-control-lg" autocomplete="new-password" />
                 <div v-if="errors.password" class="text-danger small">{{ errors.password }}</div>
               </div>
               <div class="mb-5">

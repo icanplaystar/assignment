@@ -238,16 +238,16 @@ onMounted(async () => {
         <div class="row g-2 align-items-center">
           <div class="col-12 col-lg-6">
             <div class="input-group">
-              <input class="form-control" v-model.trim="query" @keyup.enter="searchPlaces" placeholder="Search places or address (e.g., 123 Swanston St)" />
-              <button class="btn btn-primary" :disabled="searching" @click="searchPlaces">{{ searching ? 'Searching…' : 'Search' }}</button>
+              <input class="form-control" v-model.trim="query" @keyup.enter="searchPlaces" placeholder="Search places or address (e.g., 123 Swanston St)" aria-label="Search places or address" />
+              <button class="btn btn-primary" :disabled="searching" @click="searchPlaces" aria-label="Search places">{{ searching ? 'Searching…' : 'Search' }}</button>
             </div>
           </div>
           <div class="col-12 col-lg-6">
             <div class="input-group">
-              <input class="form-control" v-model.trim="startText" placeholder="Start (name or address)" />
+              <input class="form-control" v-model.trim="startText" placeholder="Start (name or address)" aria-label="Start location" />
               <span class="input-group-text">→</span>
-              <input class="form-control" v-model.trim="destText" placeholder="Destination (name or address)" />
-              <button class="btn btn-outline-secondary" :disabled="routing" @click="routeBetween">{{ routing ? 'Routing…' : 'Route' }}</button>
+              <input class="form-control" v-model.trim="destText" placeholder="Destination (name or address)" aria-label="Destination" />
+              <button class="btn btn-outline-secondary" :disabled="routing" @click="routeBetween" aria-label="Get route between start and destination">{{ routing ? 'Routing…' : 'Route' }}</button>
             </div>
             <div class="form-text" v-if="routeInfo">{{ routeInfo }}</div>
           </div>
