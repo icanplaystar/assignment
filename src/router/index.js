@@ -32,6 +32,7 @@ const Contact = () => import('../views/contact/Contact.vue')
 const Faqs = () => import('../views/contact/Faqs.vue')
 const Email = () => import('../views/Email.vue')
 const Tables = () => import('../views/Tables.vue')
+const Calendar = () => import('../views/Calendar.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -68,6 +69,7 @@ const router = createRouter({
     { path: '/contact', name: 'contact', component: Contact },
     { path: '/faqs', name: 'faqs', component: Faqs },
     { path: '/tables', name: 'tables', component: Tables },
+    { path: '/calendar', name: 'calendar', component: Calendar, meta: { requiresAuth: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })

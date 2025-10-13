@@ -43,6 +43,7 @@ function logout() {
                 <li><router-link class="dropdown-item" to="/venues/find">Find a Venue</router-link></li>
                 <li><router-link class="dropdown-item" to="/events/upcoming">Upcoming Events</router-link></li>
                 <li><router-link class="dropdown-item" to="/tables">Tables</router-link></li>
+                <li><router-link class="dropdown-item" to="/calendar">Calendar</router-link></li>
               </ul>
             </li>
             <li class="nav-item dropdown">
