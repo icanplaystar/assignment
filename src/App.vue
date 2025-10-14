@@ -28,7 +28,6 @@ function logout() {
         <div class="collapse navbar-collapse" id="navbarsExample">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item"><router-link class="nav-link" to="/">Home</router-link></li>
-            <li class="nav-item"><router-link class="nav-link" to="/tables">Tables</router-link></li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navPrograms" role="button" data-bs-toggle="dropdown" aria-expanded="false">Programs</a>
               <ul class="dropdown-menu" aria-labelledby="navPrograms">
@@ -43,7 +42,6 @@ function logout() {
               <ul class="dropdown-menu" aria-labelledby="navVenues">
                 <li><router-link class="dropdown-item" to="/venues/find">Find a Venue</router-link></li>
                 <li><router-link class="dropdown-item" to="/events/upcoming">Upcoming Events</router-link></li>
-                <li><router-link class="dropdown-item" to="/tables">Tables</router-link></li>
                 <li><router-link class="dropdown-item" to="/calendar">Calendar</router-link></li>
               </ul>
             </li>

@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 
 const DATA_KEY = 'app_items'
 const RATINGS_KEY = 'app_ratings'
+const VERSION_KEY = 'app_schema_version'
+const CURRENT_VERSION = 2
 
 function readJson(key, fallback) {
   try {
@@ -16,13 +18,36 @@ function writeJson(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
+function getDefaultItems() {
+  return [
+    { id: 'find-venue', name: 'Find a Venue', description: 'Search, filter and map routing experience' },
+    { id: 'events', name: 'Upcoming Events', description: 'Event list, register and navigate' },
+    { id: 'calendar', name: 'Booking Calendar', description: 'Book time slots with conflict prevention' },
+    { id: 'email', name: 'Email & Bulk Email', description: 'Send email with attachment or to selected users' },
+    { id: 'accessibility', name: 'Accessibility', description: 'Keyboard navigation, labels, and WCAG enhancements' }
+  ]
+}
+
+function migrateItems(maybeItems) {
+  // If old demo data (Item A/B/C) or empty, replace with feature-based items
+  if (!Array.isArray(maybeItems) || maybeItems.length === 0) return getDefaultItems()
+  const sample = (maybeItems[0]?.name || '').toLowerCase()
+  if (sample.startsWith('item ')) return getDefaultItems()
+  return maybeItems
+}
+
+const initialItems = (() => {
+  const stored = readJson(DATA_KEY, null)
+  const items = migrateItems(stored)
+  // Persist migrated structure & version
+  writeJson(DATA_KEY, items)
+  writeJson(VERSION_KEY, CURRENT_VERSION)
+  return items
+})()
+
 export const useDataStore = defineStore('data', {
   state: () => ({
-    items: readJson(DATA_KEY, [
-      { id: '1', name: 'Item A', description: 'First example item' },
-      { id: '2', name: 'Item B', description: 'Second example item' },
-      { id: '3', name: 'Item C', description: 'Third example item' }
-    ]),
+    items: initialItems,
     ratings: readJson(RATINGS_KEY, {})
   }),
   actions: {
