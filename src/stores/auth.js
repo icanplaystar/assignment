@@ -88,13 +88,14 @@ export const useAuthStore = defineStore('auth', {
       this.session = { userId: id }
       this.save()
     },
-    login({ email, password }) {
+    login({ email, password, roleHint }) {
       const auth = getFirebaseAuth()
       const emailTrimmed = String(email || '').trim().toLowerCase()
       if (auth) {
         return signInWithEmailAndPassword(auth, emailTrimmed, String(password))
           .then(({ user }) => {
-            const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
+            let role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
+            if (roleHint === 'admin' || roleHint === 'user') role = roleHint
             this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
             this.save()
           })

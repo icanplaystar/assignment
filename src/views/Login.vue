@@ -7,7 +7,7 @@ const auth = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 
-const form = reactive({ email: '', password: '' })
+const form = reactive({ email: '', password: '', roleHint: 'user' })
 const errors = reactive({ email: '', password: '', general: '' })
 const submitting = ref(false)
 
@@ -26,7 +26,7 @@ async function submit() {
   if (!validate()) return
   submitting.value = true
   try {
-    auth.login({ email: form.email, password: form.password })
+    auth.login({ email: form.email, password: form.password, roleHint: form.roleHint })
     const redirect = route.query.redirect || { name: 'home' }
     router.push(redirect)
   } catch (e) {
@@ -65,11 +65,19 @@ async function loginWithGoogle() {
             <input id="login-email" v-model.trim="form.email" type="email" class="form-control form-control-lg" placeholder="you@example.com" autocomplete="username" />
                 <div v-if="errors.email" class="text-danger small">{{ errors.email }}</div>
               </div>
-              <div class="mb-4">
+          <div class="mb-4">
             <label class="form-label" for="login-password">Password</label>
             <input id="login-password" v-model.trim="form.password" type="password" class="form-control form-control-lg" autocomplete="current-password" />
                 <div v-if="errors.password" class="text-danger small">{{ errors.password }}</div>
               </div>
+          <div class="mb-4">
+            <label class="form-label" for="login-role">Role (for demo)</label>
+            <select id="login-role" class="form-select" v-model="form.roleHint" aria-label="Role hint">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+            <div class="form-text">仅用于演示本地/登录会话中的角色（Firebase 账户以 @admin.local 仍自动识别为 admin）。</div>
+          </div>
           <button class="btn btn-primary btn-lg w-100 mb-3 py-3 fw-semibold" :disabled="submitting" @click="submit" type="submit">Login</button>
               <button class="btn btn-outline-secondary btn-lg w-100 py-3 fw-semibold" :disabled="submitting" @click="loginWithGoogle">
                 Sign in with Google

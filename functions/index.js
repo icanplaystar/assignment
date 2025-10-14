@@ -12,6 +12,7 @@ import { onRequest } from 'firebase-functions/v2/https'
 import { defineSecret } from 'firebase-functions/params'
 import admin from 'firebase-admin'
 import nodemailer from 'nodemailer'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 admin.initializeApp()
 
@@ -20,6 +21,7 @@ const SMTP_PORT = defineSecret('SMTP_PORT')
 const SMTP_USER = defineSecret('SMTP_USER')
 const SMTP_PASS = defineSecret('SMTP_PASS')
 const SMTP_FROM = defineSecret('SMTP_FROM')
+const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY')
 
 export const sendEmail = onRequest({ secrets: [SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM], cors: true, region: 'us-central1' }, async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -45,5 +47,49 @@ export const sendEmail = onRequest({ secrets: [SMTP_HOST, SMTP_PORT, SMTP_USER, 
     return res.json({ ok: true })
   } catch (e) {
     return res.status(500).json({ error: e?.message || 'Failed to send' })
+  }
+})
+
+// GenAI endpoint: summarize or generate copy
+export const genaiSuggest = onRequest({ secrets: [GEMINI_API_KEY], cors: true, region: 'us-central1' }, async (req, res) => {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+  try {
+    const { prompt } = req.body || {}
+    if (!prompt) return res.status(400).json({ error: 'Missing prompt' })
+    // Try REST v1 (widely available) first, then SDK as fallback
+    const apiKey = GEMINI_API_KEY.value()
+    const restModels = ['gemini-1.5-flash-latest', 'gemini-1.5-pro-latest']
+    let text = ''
+    let lastErr
+    for (const m of restModels) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1/models/${m}:generateContent?key=${apiKey}`
+        const r = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
+        })
+        const data = await r.json()
+        if (!r.ok) throw new Error(data?.error?.message || `HTTP ${r.status}`)
+        text = data?.candidates?.[0]?.content?.parts?.map(p => p.text).join('\n') || ''
+        if (text) break
+      } catch (e) {
+        lastErr = e
+      }
+    }
+    if (!text) {
+      try {
+        const genAI = new GoogleGenerativeAI(apiKey)
+        const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+        const result = await model.generateContent(prompt)
+        text = result.response?.text?.() || ''
+      } catch (e) {
+        lastErr = e
+      }
+    }
+    if (!text) throw lastErr || new Error('No text generated')
+    return res.json({ ok: true, text })
+  } catch (e) {
+    return res.status(500).json({ error: e?.message || 'GenAI failed' })
   }
 })

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useAuthStore } from './stores/auth'
 import { useRouter } from 'vue-router'
+import AiAssist from './components/AiAssist.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -99,6 +100,7 @@ function logout() {
 
     <main id="main" class="container-fluid my-4" role="main">
       <router-view aria-live="polite" />
+      <AiAssist />
     </main>
   </div>
   
