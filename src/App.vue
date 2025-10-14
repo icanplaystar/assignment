@@ -29,43 +29,11 @@ function logout() {
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item"><router-link class="nav-link" to="/">Home</router-link></li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navPrograms" role="button" data-bs-toggle="dropdown" aria-expanded="false">Programs</a>
-              <ul class="dropdown-menu" aria-labelledby="navPrograms">
-                <li><router-link class="dropdown-item" to="/programs">Overview</router-link></li>
-                <li><router-link class="dropdown-item" to="/programs/community">Community Sessions</router-link></li>
-                <li><router-link class="dropdown-item" to="/programs/youth">Youth Pathways</router-link></li>
-                <li><router-link class="dropdown-item" to="/programs/women">Women & Girls Nights</router-link></li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navVenues" role="button" data-bs-toggle="dropdown" aria-expanded="false">Venues & Events</a>
               <ul class="dropdown-menu" aria-labelledby="navVenues">
                 <li><router-link class="dropdown-item" to="/venues/find">Find a Venue</router-link></li>
                 <li><router-link class="dropdown-item" to="/events/upcoming">Upcoming Events</router-link></li>
                 <li><router-link class="dropdown-item" to="/calendar">Calendar</router-link></li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navResources" role="button" data-bs-toggle="dropdown" aria-expanded="false">Resources</a>
-              <ul class="dropdown-menu" aria-labelledby="navResources">
-                <li><router-link class="dropdown-item" to="/resources/getting-started">Getting Started</router-link></li>
-                <li><router-link class="dropdown-item" to="/resources/health">Health & Wellbeing</router-link></li>
-                <li><router-link class="dropdown-item" to="/resources/safety">Safety & Inclusion</router-link></li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navInvolved" role="button" data-bs-toggle="dropdown" aria-expanded="false">Get Involved</a>
-              <ul class="dropdown-menu" aria-labelledby="navInvolved">
-                <li><router-link class="dropdown-item" to="/involved/volunteer">Volunteer</router-link></li>
-                <li><router-link class="dropdown-item" to="/involved/partner">Partner with Us</router-link></li>
-                <li><router-link class="dropdown-item" to="/involved/donate">Donate</router-link></li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navStories" role="button" data-bs-toggle="dropdown" aria-expanded="false">Stories</a>
-              <ul class="dropdown-menu" aria-labelledby="navStories">
-                <li><router-link class="dropdown-item" to="/stories/participants">Participant Stories</router-link></li>
-                <li><router-link class="dropdown-item" to="/stories/news">News & Highlights</router-link></li>
               </ul>
             </li>
             <li class="nav-item dropdown">
