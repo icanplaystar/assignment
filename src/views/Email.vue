@@ -72,11 +72,11 @@ async function send() {
           <label class="form-label">Attachment</label>
           <input type="file" class="form-control" @change="onFile" />
         </div>
-        <button class="btn btn-primary" :disabled="sending" @click="send">
+        <button class="btn btn-primary" :disabled="sending" @click="send" aria-label="Send email">
           <span v-if="sending" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
           {{ sending ? 'Sending...' : 'Send' }}
         </button>
-        <div class="mt-3" aria-live="polite">{{ status }}</div>
+        <div class="mt-3" aria-live="polite" role="status">{{ status }}</div>
       </div>
     </div>
   </div>

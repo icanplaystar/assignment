@@ -249,7 +249,7 @@ onMounted(async () => {
               <input class="form-control" v-model.trim="destText" placeholder="Destination (name or address)" aria-label="Destination" />
               <button class="btn btn-outline-secondary" :disabled="routing" @click="routeBetween" aria-label="Get route between start and destination">{{ routing ? 'Routing…' : 'Route' }}</button>
             </div>
-            <div class="form-text" v-if="routeInfo">{{ routeInfo }}</div>
+            <div class="form-text" v-if="routeInfo" role="status" aria-live="polite">{{ routeInfo }}</div>
           </div>
         </div>
         <div class="row g-2 align-items-center mt-1">
@@ -264,10 +264,10 @@ onMounted(async () => {
             Legend: <span class="badge bg-primary">Search results</span> <span class="badge bg-success">Our events</span>
           </div>
         </div>
-        <div class="mt-2" v-if="results.length">
+        <div class="mt-2" v-if="results.length" aria-live="polite" role="region" aria-label="Search results list">
           <div class="small text-muted mb-1">Results:</div>
-          <div class="d-flex flex-wrap gap-2">
-            <button v-for="r in results" :key="r.id" class="btn btn-sm btn-light border" @click="() => { map.flyTo({ center: r.center, zoom: 14 }); }">{{ r.text }}</button>
+          <div class="d-flex flex-wrap gap-2" role="list">
+            <button v-for="r in results" :key="r.id" class="btn btn-sm btn-light border" role="listitem" :aria-label="`Fly to ${r.text}`" @click="() => { map.flyTo({ center: r.center, zoom: 14 }); }">{{ r.text }}</button>
           </div>
         </div>
       </div>

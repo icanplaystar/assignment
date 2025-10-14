@@ -20,7 +20,7 @@ function logout() {
     <a href="#main" class="visually-hidden-focusable skip-link">Skip to main content</a>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" role="navigation" aria-label="Primary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#" @click.prevent="$router.push({ name: 'home' })">PingPong Pathways</a>
+        <a class="navbar-brand" href="#" @click.prevent="$router.push({ name: 'home' })"><span role="img" aria-label="PingPong Pathways brand">PingPong Pathways</span></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample" aria-controls="navbarsExample" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>

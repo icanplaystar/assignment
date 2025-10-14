@@ -81,6 +81,12 @@ button:focus-visible {
 .btn-primary:hover { filter: brightness(1.05); }
 .btn-outline-secondary { border-width: 2px; }
 
+/* Focus visibility for keyboard users */
+:focus-visible {
+  outline: 3px solid #0d6efd;
+  outline-offset: 2px;
+}
+
 /* Accessibility helpers */
 .visually-hidden-focusable:active, .visually-hidden-focusable:focus {
   position: static;
