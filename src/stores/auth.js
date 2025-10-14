@@ -124,6 +124,35 @@ export const useAuthStore = defineStore('auth', {
       const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
       this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
       this.save()
+    },
+    async updateCurrentUser({ name }) {
+      if (!this.currentUser) throw new Error('Not authenticated')
+      const nameTrimmed = String(name || '').trim()
+      if (!nameTrimmed) throw new Error('Name is required')
+      // Firebase-backed session: update displayName via Firebase, then mirror to session
+      if (this.session?.provider === 'firebase') {
+        const auth = getFirebaseAuth()
+        const fbUser = auth?.currentUser || null
+        if (!fbUser) throw new Error('No Firebase user')
+        try {
+          await updateProfile(fbUser, { displayName: nameTrimmed })
+        } catch (e) {
+          // surface concise message
+          throw new Error(e?.message || 'Failed to update profile')
+        }
+        this.session = {
+          ...this.session,
+          user: { ...this.session.user, name: nameTrimmed }
+        }
+        this.save()
+        return
+      }
+      // Local session: update in users array
+      const current = this.currentUser
+      const idx = this.users.findIndex(u => u.id === current.id)
+      if (idx === -1) throw new Error('User not found')
+      this.users[idx] = { ...this.users[idx], name: nameTrimmed }
+      this.save()
     }
   }
 })

@@ -50,6 +50,7 @@ function logout() {
                 <li><router-link class="dropdown-item" to="/faqs">FAQs</router-link></li>
               </ul>
             </li>
+            <li class="nav-item"><router-link class="nav-link" to="/tables">Tables</router-link></li>
             <li v-if="isAuthenticated" class="nav-item"><router-link class="nav-link" to="/profile">Profile</router-link></li>
             <li v-if="isAuthenticated && isAdmin" class="nav-item"><router-link class="nav-link" to="/admin">Admin</router-link></li>
             <li v-if="isAuthenticated" class="nav-item"><router-link class="nav-link" to="/email">Email</router-link></li>
