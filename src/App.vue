@@ -85,6 +85,7 @@ function logout() {
             </li>
             <li v-if="isAuthenticated" class="nav-item"><router-link class="nav-link" to="/profile">Profile</router-link></li>
             <li v-if="isAuthenticated && isAdmin" class="nav-item"><router-link class="nav-link" to="/admin">Admin</router-link></li>
+            <li v-if="isAuthenticated && isAdmin" class="nav-item"><router-link class="nav-link" to="/bulk-email">Bulk Email</router-link></li>
             <li v-if="isAuthenticated" class="nav-item"><router-link class="nav-link" to="/email">Email</router-link></li>
           </ul>
           <ul class="navbar-nav ms-auto">

@@ -33,6 +33,7 @@ const Faqs = () => import('../views/contact/Faqs.vue')
 const Email = () => import('../views/Email.vue')
 const Tables = () => import('../views/Tables.vue')
 const Calendar = () => import('../views/Calendar.vue')
+const BulkEmail = () => import('../views/BulkEmail.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -70,6 +71,7 @@ const router = createRouter({
     { path: '/faqs', name: 'faqs', component: Faqs },
     { path: '/tables', name: 'tables', component: Tables },
     { path: '/calendar', name: 'calendar', component: Calendar, meta: { requiresAuth: true } },
+    { path: '/bulk-email', name: 'bulk-email', component: BulkEmail, meta: { requiresAuth: true, roles: ['admin'] } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })
