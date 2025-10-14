@@ -1,6 +1,7 @@
 // Firebase initialization with lazy guards
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyCepCWbh5WcwPYiDDTq24qwXcL6H9sL6MA',
@@ -17,6 +18,14 @@ export function getFirebaseAuth() {
   }
   const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
   return getAuth(app)
+}
+
+export function getFirestoreDb() {
+  if (!firebaseConfig.apiKey) {
+    return null
+  }
+  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
+  return getFirestore(app)
 }
 
 
