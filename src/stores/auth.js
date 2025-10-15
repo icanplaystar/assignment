@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   updateProfile
 } from 'firebase/auth'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, GithubAuthProvider, signInWithPopup, fetchSignInMethodsForEmail, linkWithCredential, EmailAuthProvider } from 'firebase/auth'
 
 const USERS_KEY = 'app_users'
 const SESSION_KEY = 'app_session'
@@ -120,10 +120,64 @@ export const useAuthStore = defineStore('auth', {
       const auth = getFirebaseAuth()
       if (!auth) throw new Error('Firebase is not configured')
       const provider = new GoogleAuthProvider()
-      const { user } = await signInWithPopup(auth, provider)
-      const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
-      this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
-      this.save()
+      try {
+        const { user } = await signInWithPopup(auth, provider)
+        const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
+        this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
+        this.save()
+      } catch (e) {
+        // Handle account-exists-with-different-credential by linking
+        if (e?.code === 'auth/account-exists-with-different-credential') {
+          const email = e?.customData?.email || e?.email || ''
+          const pendingCred = GoogleAuthProvider.credentialFromError?.(e)
+          if (!email || !pendingCred) throw e
+          const methods = await fetchSignInMethodsForEmail(auth, email)
+          if (methods.includes('github.com')) {
+            const { user } = await signInWithPopup(auth, new GithubAuthProvider())
+            await linkWithCredential(user, pendingCred)
+            const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
+            this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
+            this.save()
+            return
+          }
+          if (methods.includes('password')) {
+            throw new Error('This email already has a password account. Please sign in with email/password first, then link Google in Profile.')
+          }
+          throw e
+        }
+        throw e
+      }
+    },
+    async loginWithGithub() {
+      const auth = getFirebaseAuth()
+      if (!auth) throw new Error('Firebase is not configured')
+      const provider = new GithubAuthProvider()
+      try {
+        const { user } = await signInWithPopup(auth, provider)
+        const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
+        this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
+        this.save()
+      } catch (e) {
+        if (e?.code === 'auth/account-exists-with-different-credential') {
+          const email = e?.customData?.email || e?.email || ''
+          const pendingCred = GithubAuthProvider.credentialFromError?.(e)
+          if (!email || !pendingCred) throw e
+          const methods = await fetchSignInMethodsForEmail(auth, email)
+          if (methods.includes('google.com')) {
+            const { user } = await signInWithPopup(auth, new GoogleAuthProvider())
+            await linkWithCredential(user, pendingCred)
+            const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
+            this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
+            this.save()
+            return
+          }
+          if (methods.includes('password')) {
+            throw new Error('This email already has a password account. Please sign in with email/password first, then link GitHub in Profile.')
+          }
+          throw e
+        }
+        throw e
+      }
     },
     async updateCurrentUser({ name }) {
       if (!this.currentUser) throw new Error('Not authenticated')

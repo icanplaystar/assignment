@@ -11,11 +11,9 @@ const UpcomingEvents = () => import('../views/events/UpcomingEvents.vue')
 
 // removed Programs/Resources/Get Involved/Stories sections for a simpler app
 
-const MissionImpact = () => import('../views/about/MissionImpact.vue')
-const GovernanceReports = () => import('../views/about/GovernanceReports.vue')
+// About section removed
 
 const Contact = () => import('../views/contact/Contact.vue')
-const Faqs = () => import('../views/contact/Faqs.vue')
 const Email = () => import('../views/Email.vue')
 const Tables = () => import('../views/Tables.vue')
 const Calendar = () => import('../views/Calendar.vue')
@@ -32,12 +30,9 @@ const router = createRouter({
     // Venues & Events
     { path: '/venues/find', name: 'find-venue', component: FindVenue },
     { path: '/events/upcoming', name: 'upcoming-events', component: UpcomingEvents },
-    // About
-    { path: '/about/mission', name: 'mission-impact', component: MissionImpact },
-    { path: '/about/governance', name: 'governance-reports', component: GovernanceReports },
-    // Contact & FAQs
+    // About removed
+    // Contact
     { path: '/contact', name: 'contact', component: Contact },
-    { path: '/faqs', name: 'faqs', component: Faqs },
     { path: '/tables', name: 'tables', component: Tables },
     { path: '/calendar', name: 'calendar', component: Calendar, meta: { requiresAuth: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
@@ -59,5 +54,3 @@ router.beforeEach((to) => {
 })
 
 export default router
-
-

@@ -22,6 +22,7 @@ const SMTP_USER = defineSecret('SMTP_USER')
 const SMTP_PASS = defineSecret('SMTP_PASS')
 const SMTP_FROM = defineSecret('SMTP_FROM')
 const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY')
+const GEMINI_MODEL = defineSecret('GEMINI_MODEL')
 
 export const sendEmail = onRequest({ secrets: [SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM], cors: true, region: 'us-central1' }, async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -51,19 +52,29 @@ export const sendEmail = onRequest({ secrets: [SMTP_HOST, SMTP_PORT, SMTP_USER, 
 })
 
 // GenAI endpoint: summarize or generate copy
-export const genaiSuggest = onRequest({ secrets: [GEMINI_API_KEY], cors: true, region: 'us-central1' }, async (req, res) => {
+export const genaiSuggest = onRequest({ secrets: [GEMINI_API_KEY, GEMINI_MODEL], cors: true, region: 'us-central1' }, async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
   try {
     const { prompt } = req.body || {}
     if (!prompt) return res.status(400).json({ error: 'Missing prompt' })
-    // Try REST v1 (widely available) first, then SDK as fallback
+    // Prefer Gemini 2.x (v1beta) via REST; fallback to 1.5/v1; finally SDK
     const apiKey = GEMINI_API_KEY.value()
-    const restModels = ['gemini-1.5-flash-latest', 'gemini-1.5-pro-latest']
+    const configured = (GEMINI_MODEL.value && GEMINI_MODEL.value()) || ''
+    const restModels = [
+      configured,
+      'gemini-2.5-flash',
+      'gemini-2.5-pro',
+      'gemini-2.0-flash',
+      'gemini-2.0-pro',
+      'gemini-1.5-pro-latest',
+      'gemini-1.5-flash-latest'
+    ].filter(Boolean)
     let text = ''
     let lastErr
     for (const m of restModels) {
       try {
-        const url = `https://generativelanguage.googleapis.com/v1/models/${m}:generateContent?key=${apiKey}`
+        const apiVersion = m.startsWith('gemini-2') ? 'v1beta' : 'v1'
+        const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${m}:generateContent?key=${apiKey}`
         const r = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -80,7 +91,8 @@ export const genaiSuggest = onRequest({ secrets: [GEMINI_API_KEY], cors: true, r
     if (!text) {
       try {
         const genAI = new GoogleGenerativeAI(apiKey)
-        const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+        const modelName = configured || 'gemini-2.0-flash'
+        const model = genAI.getGenerativeModel({ model: modelName })
         const result = await model.generateContent(prompt)
         text = result.response?.text?.() || ''
       } catch (e) {

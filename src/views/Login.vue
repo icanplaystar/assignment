@@ -49,6 +49,20 @@ async function loginWithGoogle() {
     submitting.value = false
   }
 }
+
+async function loginWithGithub() {
+  errors.general = ''
+  submitting.value = true
+  try {
+    await auth.loginWithGithub()
+    const redirect = route.query.redirect || { name: 'home' }
+    router.push(redirect)
+  } catch (e) {
+    errors.general = e?.message || 'GitHub sign-in failed'
+  } finally {
+    submitting.value = false
+  }
+}
 </script>
 
 <template>
@@ -79,8 +93,11 @@ async function loginWithGoogle() {
             <div class="form-text">仅用于演示本地/登录会话中的角色（Firebase 账户以 @admin.local 仍自动识别为 admin）。</div>
           </div>
           <button class="btn btn-primary btn-lg w-100 mb-3 py-3 fw-semibold" :disabled="submitting" @click="submit" type="submit">Login</button>
-              <button class="btn btn-outline-secondary btn-lg w-100 py-3 fw-semibold" :disabled="submitting" @click="loginWithGoogle">
+              <button class="btn btn-outline-secondary btn-lg w-100 py-3 fw-semibold mb-2" :disabled="submitting" @click="loginWithGoogle">
                 Sign in with Google
+              </button>
+              <button class="btn btn-outline-dark btn-lg w-100 py-3 fw-semibold" :disabled="submitting" @click="loginWithGithub">
+                Sign in with GitHub
               </button>
             </div>
           </div>

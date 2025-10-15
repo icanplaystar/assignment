@@ -5,14 +5,22 @@ import autoTable from 'jspdf-autotable'
 import { melbourneTableTennisVenues } from '../../data/venues'
 
 const state = reactive({
-  events: melbourneTableTennisVenues.map((v, i) => ({
-    id: `e${i + 1}`,
-    name: v.name,
-    date: new Date(Date.now() + (i + 1) * 86400000).toISOString().slice(0, 10),
-    capacity: 12 + (i % 12),
-    location: v.name.split(' ')[0],
-    lngLat: v.lngLat
-  }))
+  events: melbourneTableTennisVenues.map((v, i) => {
+    const year = new Date().getFullYear()
+    const day = Math.min(31, 18 + i) // Oct 18 onward
+    const date = new Date(year, 9, day).toISOString().slice(0, 10)
+    let name = v.name
+    let capacity = 12
+    if (i === 0) { name = 'Coach GA Private Coaching'; capacity = 1 }
+    return {
+      id: `e${i + 1}`,
+      name,
+      date,
+      capacity,
+      location: v.name.split(' ')[0],
+      lngLat: v.lngLat
+    }
+  })
 })
 
 function register(ev) {

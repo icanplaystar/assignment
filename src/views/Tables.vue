@@ -133,7 +133,7 @@ const eventsTable = useTable(events, eventsColumns)
 
 <template>
   <div>
-    <h1 class="mb-4">Interactive Tables</h1>
+    <h1 class="mb-4">Users and Events Table</h1>
 
     <!-- USERS TABLE -->
     <div class="card mb-4">
