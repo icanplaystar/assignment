@@ -90,7 +90,7 @@ async function loginWithGithub() {
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-            <div class="form-text">仅用于演示本地/登录会话中的角色（Firebase 账户以 @admin.local 仍自动识别为 admin）。</div>
+            <div class="form-text">Demo only: role hint for local login. Firebase accounts ending with @admin.local are auto-recognized as admin.</div>
           </div>
           <button class="btn btn-primary btn-lg w-100 mb-3 py-3 fw-semibold" :disabled="submitting" @click="submit" type="submit">Login</button>
               <button class="btn btn-outline-secondary btn-lg w-100 py-3 fw-semibold mb-2" :disabled="submitting" @click="loginWithGoogle">

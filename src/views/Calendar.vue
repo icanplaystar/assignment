@@ -116,7 +116,7 @@ function handleSelect(info) {
     openInfo('This time slot is already occupied and cannot be booked.', 'Slot Conflict')
     return
   }
-  // 2) 服务器端创建（含读校验）
+  // 2) Server-side create with conflict check
   bookingsStore.create({ title, start: info.startStr, end: info.endStr })
     .catch(err => openInfo(err?.message || 'Failed to create booking', 'Create Failed'))
 }

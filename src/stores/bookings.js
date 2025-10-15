@@ -81,7 +81,7 @@ export const useBookingsStore = defineStore('bookings', {
       // conflict check (read-then-write). For stronger guarantees, use a transaction.
       const conflicts = await this.fetchOnce({ start, end })
       if (conflicts.length > 0) {
-        throw new Error('该时间段已被占用，无法预订')
+        throw new Error('This time slot is already occupied and cannot be booked')
       }
       const payload = {
         title: String(title),
@@ -102,7 +102,7 @@ export const useBookingsStore = defineStore('bookings', {
       if (!db) throw new Error('Database is not configured')
       const target = this.items.find(b => b.id === id)
       if (!target) throw new Error('Booking not found')
-      if (target.userId !== user.id) throw new Error('只能删除自己的预订')
+      if (target.userId !== user.id) throw new Error('You can only delete your own booking')
       await deleteDoc(doc(db, 'bookings', id))
     }
   },

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useDataStore } from '../stores/data'
+import { usePresenceStore } from '../stores/presence'
 import { Bar, Pie } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -18,7 +19,9 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, 
 
 const auth = useAuthStore()
 const data = useDataStore()
+const presence = usePresenceStore()
 const user = computed(() => auth.currentUser)
+const onlineCount = computed(() => presence.onlineCount)
 
 const totalUsers = computed(() => auth.users.length)
 const roleCounts = computed(() => {
@@ -32,13 +35,42 @@ const rolePie = computed(() => ({
   datasets: [{ data: [roleCounts.value.admin, roleCounts.value.user], backgroundColor: ['#0d6efd', '#6c757d'] }]
 }))
 
-const itemsBar = computed(() => ({
-  labels: data.items.map(i => i.name),
-  datasets: [{ label: 'Average Rating', data: data.items.map(i => Number(data.getAverage(i.id).toFixed(2))), backgroundColor: '#20c997' }]
-}))
+const itemsBar = computed(() => {
+  const labels = data.items.map(i => i.name)
+  const avgs = data.items.map(i => Number(data.getAverage(i.id).toFixed(2)))
+  const remaining = avgs.map(v => Math.max(0, 5 - v))
+  return {
+    labels,
+    datasets: [
+      { label: 'Rating', data: avgs, backgroundColor: '#20c997', stack: 'rating' },
+      { label: 'Remaining', data: remaining, backgroundColor: '#e9ecef', stack: 'rating' }
+    ]
+  }
+})
 
 const pieOptions = { responsive: false, maintainAspectRatio: false, animation: false }
-const barOptions = { responsive: false, maintainAspectRatio: false, animation: false, scales: { y: { beginAtZero: true, max: 5 } } }
+const barOptions = {
+  responsive: false,
+  maintainAspectRatio: false,
+  animation: false,
+  indexAxis: 'y',
+  scales: {
+    x: { beginAtZero: true, max: 5, stacked: true, ticks: { callback: (v) => `${Math.round((Number(v) / 5) * 100)}%` } },
+    y: { stacked: true }
+  },
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label: (ctx) => {
+          if (ctx.dataset.label !== 'Rating') return null
+          const v = Number(ctx.raw || 0)
+          return ` ${v.toFixed(2)}★ (${Math.round((v / 5) * 100)}%)`
+        }
+      }
+    }
+  }
+}
 const chartH = 220
 const pieW = 220
 const barW = 420
@@ -58,6 +90,14 @@ const barW = 420
           </div>
         </div>
       </div>
+    <div class="col-12 col-md-4">
+      <div class="card h-100 text-center">
+        <div class="card-body">
+          <div class="display-6">{{ onlineCount }}</div>
+          <div class="text-muted">Online Now</div>
+        </div>
+      </div>
+    </div>
       <div class="col-12 col-md-4">
         <div class="card h-100">
           <div class="card-body">
@@ -71,7 +111,7 @@ const barW = 420
       <div class="col-12 col-md-4">
         <div class="card h-100">
           <div class="card-body">
-            <h2 class="h6">Average Ratings</h2>
+            <h2 class="h6">Ratings (progress to 5★)</h2>
             <div :style="{height: chartH+'px', width: barW+'px'}">
               <Bar :data="itemsBar" :options="barOptions" />
             </div>

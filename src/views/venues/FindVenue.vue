@@ -107,7 +107,7 @@ async function geocode(text) {
   let res = await fetch(base)
   let data = await res.json()
   let feats = data.features || []
-  // Fallback: append Melbourne if user only输入 suburb 名称
+  // Fallback: append Melbourne if user entered only a suburb name
   if (!feats.length && qRaw && !/melbourne/i.test(qRaw)) {
     const q2 = encodeURIComponent(`${qRaw} Melbourne Victoria`)
     const url2 = `https://api.mapbox.com/geocoding/v5/mapbox.places/${q2}.json?fuzzyMatch=true&autocomplete=true&country=AU&types=${types}&limit=8&language=en&access_token=${token}`

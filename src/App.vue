@@ -4,10 +4,12 @@ import { useAuthStore } from './stores/auth'
 import { useRouter } from 'vue-router'
 import AiAssist from './components/AiAssist.vue'
 import { useUiStore } from './stores/ui'
+import { usePresenceStore } from './stores/presence'
 
 const auth = useAuthStore()
 const router = useRouter()
 const ui = useUiStore()
+const presence = usePresenceStore()
 
 const isAuthenticated = computed(() => auth.isAuthenticated)
 const isAdmin = computed(() => auth.currentUserRole === 'admin')
@@ -47,9 +49,14 @@ function onDocClick(e) {
 
 onMounted(() => {
   document.addEventListener('click', onDocClick, true)
+  // presence
+  presence.startListening()
+  if (isAuthenticated.value) presence.startForCurrentUser()
 })
 onBeforeUnmount(() => {
   document.removeEventListener('click', onDocClick, true)
+  presence.stopListening()
+  presence.stopForCurrentUser()
 })
 </script>
 

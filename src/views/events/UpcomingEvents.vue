@@ -63,6 +63,17 @@ function exportPdf() {
   })
   doc.save('upcoming-events.pdf')
 }
+
+function exportJson() {
+  const json = JSON.stringify(state.events, null, 2)
+  const blob = new Blob([json], { type: 'application/json;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'upcoming-events.json'
+  a.click()
+  URL.revokeObjectURL(url)
+}
 </script>
 
 <template>
@@ -71,6 +82,7 @@ function exportPdf() {
     <div class="d-flex gap-2 mb-2">
       <button class="btn btn-outline-secondary btn-sm" @click="exportCsv" aria-label="Export CSV">Export CSV</button>
       <button class="btn btn-outline-secondary btn-sm" @click="exportPdf" aria-label="Export PDF">Export PDF</button>
+      <button class="btn btn-outline-secondary btn-sm" @click="exportJson" aria-label="Export JSON">Export JSON</button>
     </div>
     <div class="table-responsive">
       <table class="table align-middle">

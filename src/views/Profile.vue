@@ -68,7 +68,6 @@ async function save() {
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" :value="user?.email" disabled />
-            <div class="form-text">邮箱来源于认证，不在此处修改。</div>
           </div>
           <div class="d-flex gap-2">
             <button class="btn btn-success" :disabled="saving" @click="save">Save</button>
