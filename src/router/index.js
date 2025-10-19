@@ -17,6 +17,7 @@ const Contact = () => import('../views/contact/Contact.vue')
 const Email = () => import('../views/Email.vue')
 const Tables = () => import('../views/Tables.vue')
 const Calendar = () => import('../views/Calendar.vue')
+const ApiDocs = () => import('../views/ApiDocs.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -35,6 +36,7 @@ const router = createRouter({
     { path: '/contact', name: 'contact', component: Contact },
     { path: '/tables', name: 'tables', component: Tables },
     { path: '/calendar', name: 'calendar', component: Calendar, meta: { requiresAuth: true } },
+    { path: '/api-docs', name: 'api-docs', component: ApiDocs },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })

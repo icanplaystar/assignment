@@ -83,6 +83,7 @@ onBeforeUnmount(() => {
             
             <li class="nav-item"><router-link class="nav-link" to="/contact">Contact</router-link></li>
             <li class="nav-item"><router-link class="nav-link" to="/tables">Users and Events Table</router-link></li>
+            <li class="nav-item"><router-link class="nav-link" to="/api-docs">API Docs</router-link></li>
             <li v-if="isAuthenticated" class="nav-item"><router-link class="nav-link" to="/profile">Profile</router-link></li>
             <li v-if="isAuthenticated && isAdmin" class="nav-item"><router-link class="nav-link" to="/admin">Admin</router-link></li>
             <li v-if="isAuthenticated" class="nav-item"><router-link class="nav-link" to="/email">Email</router-link></li>
