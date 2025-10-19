@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useDataStore } from '../stores/data'
 import { usePresenceStore } from '../stores/presence'
@@ -93,6 +93,62 @@ const barOptions = {
 const chartH = 220
 const pieW = 220
 const barW = 420
+
+// Event management functions
+const showAddEventModal = ref(false)
+const newEvent = ref({
+  name: '',
+  date: '',
+  time: '',
+  location: '',
+  capacity: 12
+})
+
+// Demo events data (in real app, this would come from Firestore)
+const events = ref([
+  { id: 1, name: 'Coach GA Private Coaching', date: 'Oct 18, 2025', time: '6:00 PM', location: 'Melbourne CBD', capacity: 1, registered: 1, status: 'Full' },
+  { id: 2, name: 'Carlton Session', date: 'Oct 19, 2025', time: '6:00 PM', location: 'Carlton', capacity: 12, registered: 1, status: 'Available' },
+  { id: 3, name: 'Richmond Session', date: 'Oct 20, 2025', time: '6:00 PM', location: 'Richmond', capacity: 12, registered: 0, status: 'Open' },
+  { id: 4, name: 'Southbank Session', date: 'Oct 21, 2025', time: '6:00 PM', location: 'Southbank', capacity: 12, registered: 0, status: 'Open' },
+  { id: 5, name: 'Docklands Session', date: 'Oct 22, 2025', time: '6:00 PM', location: 'Docklands', capacity: 12, registered: 0, status: 'Open' },
+  { id: 6, name: 'Fitzroy Session', date: 'Oct 23, 2025', time: '6:00 PM', location: 'Fitzroy', capacity: 12, registered: 0, status: 'Open' },
+  { id: 7, name: 'St Kilda Session', date: 'Oct 24, 2025', time: '6:00 PM', location: 'St Kilda', capacity: 12, registered: 0, status: 'Open' }
+])
+
+const addEvent = () => {
+  if (!newEvent.value.name || !newEvent.value.date || !newEvent.value.time || !newEvent.value.location) {
+    alert('Please fill in all required fields')
+    return
+  }
+  
+  const newId = Math.max(...events.value.map(e => e.id)) + 1
+  events.value.push({
+    id: newId,
+    name: newEvent.value.name,
+    date: newEvent.value.date,
+    time: newEvent.value.time,
+    location: newEvent.value.location,
+    capacity: newEvent.value.capacity,
+    registered: 0,
+    status: 'Open'
+  })
+  
+  // Reset form
+  newEvent.value = {
+    name: '',
+    date: '',
+    time: '',
+    location: '',
+    capacity: 12
+  }
+  showAddEventModal.value = false
+}
+
+const deleteEvent = (eventId) => {
+  if (confirm('Are you sure you want to delete this event?')) {
+    events.value = events.value.filter(e => e.id !== eventId)
+  }
+}
 </script>
 
 <template>
@@ -183,8 +239,11 @@ const barW = 420
     <div class="row g-3 mb-4">
       <div class="col-12">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="h5 mb-0">📅 Event Management</h3>
+            <button class="btn btn-primary btn-sm" @click="showAddEventModal = true">
+              <i class="bi bi-plus-circle"></i> Add Event
+            </button>
           </div>
           <div class="card-body">
             <div class="row mb-3">
@@ -228,40 +287,23 @@ const barW = 420
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Coach GA Private Coaching</td>
-                    <td>Oct 18, 2025</td>
-                    <td>Melbourne CBD</td>
-                    <td>1</td>
-                    <td>1/1</td>
-                    <td><span class="badge bg-success">Full</span></td>
+                  <tr v-for="event in events" :key="event.id">
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.location }}</td>
+                    <td>{{ event.capacity }}</td>
+                    <td>{{ event.registered }}/{{ event.capacity }}</td>
                     <td>
-                      <button class="btn btn-sm btn-outline-primary">View</button>
-                      <button class="btn btn-sm btn-outline-warning">Edit</button>
+                      <span class="badge" :class="{
+                        'bg-success': event.status === 'Full',
+                        'bg-warning': event.status === 'Available',
+                        'bg-secondary': event.status === 'Open'
+                      }">{{ event.status }}</span>
                     </td>
-                  </tr>
-                  <tr>
-                    <td>Carlton Session</td>
-                    <td>Oct 19, 2025</td>
-                    <td>Carlton</td>
-                    <td>12</td>
-                    <td>1/12</td>
-                    <td><span class="badge bg-warning">Available</span></td>
                     <td>
-                      <button class="btn btn-sm btn-outline-primary">View</button>
-                      <button class="btn btn-sm btn-outline-warning">Edit</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Richmond Session</td>
-                    <td>Oct 20, 2025</td>
-                    <td>Richmond</td>
-                    <td>12</td>
-                    <td>0/12</td>
-                    <td><span class="badge bg-secondary">Open</span></td>
-                    <td>
-                      <button class="btn btn-sm btn-outline-primary">View</button>
-                      <button class="btn btn-sm btn-outline-warning">Edit</button>
+                      <button class="btn btn-sm btn-outline-primary me-1">View</button>
+                      <button class="btn btn-sm btn-outline-warning me-1">Edit</button>
+                      <button class="btn btn-sm btn-outline-danger" @click="deleteEvent(event.id)">Delete</button>
                     </td>
                   </tr>
                 </tbody>
@@ -281,6 +323,46 @@ const barW = 420
             <div :style="{height: chartH+'px', width: barW+'px'}">
               <Bar :data="itemsBar" :options="barOptions" />
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div v-if="showAddEventModal" class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5)">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Event</h5>
+            <button type="button" class="btn-close" @click="showAddEventModal = false"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="addEvent">
+              <div class="mb-3">
+                <label for="eventName" class="form-label">Event Name *</label>
+                <input type="text" class="form-control" id="eventName" v-model="newEvent.name" required>
+              </div>
+              <div class="mb-3">
+                <label for="eventDate" class="form-label">Date *</label>
+                <input type="date" class="form-control" id="eventDate" v-model="newEvent.date" required>
+              </div>
+              <div class="mb-3">
+                <label for="eventTime" class="form-label">Time *</label>
+                <input type="time" class="form-control" id="eventTime" v-model="newEvent.time" required>
+              </div>
+              <div class="mb-3">
+                <label for="eventLocation" class="form-label">Location *</label>
+                <input type="text" class="form-control" id="eventLocation" v-model="newEvent.location" required>
+              </div>
+              <div class="mb-3">
+                <label for="eventCapacity" class="form-label">Capacity</label>
+                <input type="number" class="form-control" id="eventCapacity" v-model="newEvent.capacity" min="1" max="50">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="showAddEventModal = false">Cancel</button>
+            <button type="button" class="btn btn-primary" @click="addEvent">Add Event</button>
           </div>
         </div>
       </div>
