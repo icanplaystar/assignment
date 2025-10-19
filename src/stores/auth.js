@@ -158,23 +158,45 @@ export const useAuthStore = defineStore('auth', {
         this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
         this.save()
       } catch (e) {
+        console.log('GitHub login error:', e)
         if (e?.code === 'auth/account-exists-with-different-credential') {
           const email = e?.customData?.email || e?.email || ''
-          const pendingCred = GithubAuthProvider.credentialFromError?.(e)
-          if (!email || !pendingCred) throw e
+          console.log('Account exists with different credential for email:', email)
+          
+          // Get existing sign-in methods for this email
           const methods = await fetchSignInMethodsForEmail(auth, email)
+          console.log('Existing methods:', methods)
+          
+          // If methods array is empty, provide a generic message
+          if (!methods || methods.length === 0) {
+            throw new Error(`This email (${email}) is already registered with a different account. Please try signing in with Google, or use a different email address for GitHub login.`)
+          }
+          
           if (methods.includes('google.com')) {
-            const { user } = await signInWithPopup(auth, new GoogleAuthProvider())
-            await linkWithCredential(user, pendingCred)
-            const role = user.email?.endsWith('@admin.local') ? 'admin' : 'user'
-            this.session = { provider: 'firebase', user: { id: user.uid, name: user.displayName || user.email || 'User', email: user.email || '', role } }
-            this.save()
-            return
+            // User has Google account, ask them to sign in with Google first
+            throw new Error(`This email is already registered with Google. Please sign in with Google first, then you can link your GitHub account in your profile.`)
           }
+          
           if (methods.includes('password')) {
-            throw new Error('This email already has a password account. Please sign in with email/password first, then link GitHub in Profile.')
+            // User has password account, ask them to sign in with email/password first
+            throw new Error(`This email is already registered with email/password. Please sign in with your email and password first, then you can link your GitHub account in your profile.`)
           }
-          throw e
+          
+          // If we get here, there's some other provider conflict
+          console.log('Available methods:', methods)
+          const providerNames = {
+            'google.com': 'Google',
+            'password': 'Email/Password',
+            'facebook.com': 'Facebook',
+            'github.com': 'GitHub',
+            'email': 'Email/Password'
+          }
+          
+          // Find the first known provider
+          const knownProvider = methods.find(method => providerNames[method])
+          const existingProvider = knownProvider ? providerNames[knownProvider] : (methods[0] || 'Unknown')
+          
+          throw new Error(`This email is already registered with ${existingProvider}. Please sign in with ${existingProvider} first, then you can link your GitHub account in your profile.`)
         }
         throw e
       }
