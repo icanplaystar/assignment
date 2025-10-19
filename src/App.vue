@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
           </ul>
           <ul class="navbar-nav ms-auto">
             <li v-if="isAuthenticated" class="nav-item d-flex align-items-center me-2">
-              <span class="navbar-text text-white-50 small">Hello, {{ displayName }}</span>
+              <span class="navbar-text text-white-50 small">Hello, {{ displayName }} ({{ auth.currentUserRole }})</span>
             </li>
             <li class="nav-item dropdown me-2">
               <a class="nav-link dropdown-toggle" href="#" id="navTextSize" role="button" data-bs-toggle="dropdown" aria-expanded="false">Text Size</a>
